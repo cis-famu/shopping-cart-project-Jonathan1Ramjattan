@@ -27,7 +27,7 @@ int main()
     username = "jsmith", 
     password = "blue123", 
     accountNumber = "12345679", 
-    numberLevel = "Gold", 
+    memberLevel = "Gold", 
     address = "100 W New Haven Ave, Melbourne, Fl, 23901",
     sku; 
     double credit=3000;
@@ -80,13 +80,14 @@ int main()
                       if(total <= credit)//Makes sure the purchase is within the credit limit
                       {
                         remainingCredit = credit-total;//calculates remaining credit
-                        cout << "--------------------THANK YOU--------------------" << endl;
-                        cout << "Name: " << name << endl;                                                                   //--------------------------------------------------------------------------//
-                        cout << "Username: " << username << endl;                                                           //  
-                        cout << "Account Number: " << accountNumber << endl;                                                //                         OUTPUTS THE RECIEPT
-                        cout << "Previous Balance: $" << credit << endl;                                                    //  
-                        cout << endl << quantity << "x" << " 50PCK 1/2in Bolt(s)" << setw(10) << "$" << total << endl;   //  
-                        cout << endl << "Remaining Balance: $" << remainingCredit << endl;                                  //--------------------------------------------------------------------------//
+                        cout << "--------------------THANK YOU--------------------" << endl;//outputs the receipt
+                        cout << "Name: " << name << endl;                                                                   
+                        cout << "Username: " << username << endl;                                                             
+                        cout << "Account Number: " << accountNumber << endl;
+                        cout << "Member Level: "  << memberLevel << endl;                                            
+                        cout << "Previous Balance: $" << credit << endl;                                                      
+                        cout << endl << quantity << "x" << " 50PCK 1/2in Bolt(s)" << setw(10) << "$" << total << endl;     
+                        cout << endl << "Remaining Balance: $" << remainingCredit << endl;                                 
                       }
                       else
                       {
@@ -109,6 +110,7 @@ int main()
                         cout << "Name: " << name << endl;                                                             
                         cout << "Username: " << username << endl;
                         cout << "Account Number: " << accountNumber << endl;
+                        cout << "Member Level: "  << memberLevel << endl;  
                         cout << "Previous Balance: $" << credit << endl; 
                         cout << endl << quantity << "x" << " 25PCK 1/4in Nail(s)" << setw(10) << "$" << total << endl;
                         cout << endl << "Remaining Balance: $" << remainingCredit << endl;
@@ -133,7 +135,8 @@ int main()
                         cout << "--------------------THANK YOU--------------------" << endl;
                         cout << "Name: " << name << endl;
                         cout << "Username: " << username << endl;
-                        cout << "Account Number: " << accountNumber << endl;
+                         cout << "Account Number: " << accountNumber << endl;
+                        cout << "Member Level: "  << memberLevel << endl;  
                         cout << "Previous Balance: $" << credit << endl; 
                         cout << endl << quantity << "x" << " Hammer(s)" << setw(10) << "$" << total << endl;
                         cout << endl << "Remaining Balance: $" << remainingCredit << endl;
