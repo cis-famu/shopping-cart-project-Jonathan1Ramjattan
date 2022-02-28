@@ -86,7 +86,7 @@ int main()
                         cout << "Account Number: " << accountNumber << endl;
                         cout << "Member Level: "  << memberLevel << endl;                                            
                         cout << "Previous Balance: $" << credit << endl;                                                      
-                        cout << endl << quantity << "x" << " 50PCK 1/2in Bolt(s)" << setw(10) << "$" << total << endl;     
+                        cout << endl << quantity << "x" << " 50PCK 1/2in Bolt(s)   HF-342" << setw(10) << "$" << total << endl;     
                         cout << endl << "Remaining Balance: $" << remainingCredit << endl;                                 
                       }
                       else
@@ -112,7 +112,7 @@ int main()
                         cout << "Account Number: " << accountNumber << endl;
                         cout << "Member Level: "  << memberLevel << endl;  
                         cout << "Previous Balance: $" << credit << endl; 
-                        cout << endl << quantity << "x" << " 25PCK 1/4in Nail(s)" << setw(10) << "$" << total << endl;
+                        cout << endl << quantity << "x" << " 25PCK 1/4in Nail(s)  LK-322" << setw(10) << "$" << total << endl;
                         cout << endl << "Remaining Balance: $" << remainingCredit << endl;
                       }
                       else
@@ -138,7 +138,7 @@ int main()
                          cout << "Account Number: " << accountNumber << endl;
                         cout << "Member Level: "  << memberLevel << endl;  
                         cout << "Previous Balance: $" << credit << endl; 
-                        cout << endl << quantity << "x" << " Hammer(s)" << setw(10) << "$" << total << endl;
+                        cout << endl << quantity << "x" << " Hammer(s)  KF-231" << setw(10) << "$" << total << endl;
                         cout << endl << "Remaining Balance: $" << remainingCredit << endl;
                       }
                       else
