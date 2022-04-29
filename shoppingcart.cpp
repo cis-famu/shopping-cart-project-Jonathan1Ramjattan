@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 // File name:   Shoppingcart.cpp
 // Assign ID:  
-// Due Date:    4.10.22
+// Due Date:    4.29.22
 //
 // Purpose:     
 //
@@ -17,7 +17,28 @@
 #include <fstream>
 using namespace std;
 
-void populateAccounts( string name[],string un[], string pw[], string aN[], string mL[], double cred[], string addr[], int size) 
+struct accounts//STRUCT FOR ACCOUNTS
+{
+  string name,
+  username,
+  password, 
+  accountNumber, 
+  memberLevel,
+  address;
+  double credit;
+};
+
+
+struct product//STRUCT FOR PRODUCT
+{
+  string sku;
+  string desc;
+  string iiu;
+  int qty; 
+  double price;
+};
+
+void populateAccounts(struct accounts acc[], int size) 
 {
   string temp;
     //POPULATES ACCOUNTS
@@ -25,24 +46,25 @@ void populateAccounts( string name[],string un[], string pw[], string aN[], stri
     file.open("accounts.dat");
     for(int i=0;i<size;i++)
     { 
-      getline(file, name[i], ';');
+      getline(file, acc[i].name, ';');
 
-      getline(file, un[i], ';');
+      getline(file, acc[i].username, ';');
 
-      getline(file, pw[i], ';');
+      getline(file, acc[i].password, ';');
 
-      getline(file, aN[i], ';');
+      getline(file, acc[i].accountNumber, ';');
 
-      getline(file, mL[i], ';');
+      getline(file, acc[i].memberLevel, ';');
 
       getline(file, temp, ';');
-      cred[i] =stod(temp); 
+      acc[i].credit =stod(temp); 
 
-      getline(file, addr[i]);
+      getline(file, acc[i].address);
+
     }
     file.close(); 
 }
-void populateStore(string sku[], string name[], string iiu[], double ppu[], double qoh[], int size)
+void populateStore(struct product store[], int size)
 {
   string temp;
     //POPULATES Store
@@ -50,24 +72,23 @@ void populateStore(string sku[], string name[], string iiu[], double ppu[], doub
     fileB.open("products.csv");
     for(int i=0;i<size;i++)
     { 
-      getline(fileB, sku[i], ',');
+      getline(fileB, store[i].sku, ',');
  
-      getline(fileB, name[i], ',');
-      
-      getline(fileB, iiu[i], ',');
-    
+      getline(fileB, store[i].desc, ',');
+
+      getline(fileB, store[i].iiu, ',');
+
       getline(fileB, temp, ',');
-      ppu[i] =stod(temp); 
-      
+      store[i].price =stod(temp); 
+
       getline(fileB, temp);
-      qoh[i] =stod(temp); 
-        
+      store[i].qty =stoi(temp); 
+
     }
     fileB.close();
 }
 
-void makePurchase(string name[], string username[], string accNum[], string memberlvl[], string address[], 
-double credit[], string sku[], string in[], string inunit[], double price[], double quantity[], int x, int size)
+void makePurchase(struct accounts a[], struct product p[], int x, int size)//MAKES A PURCHASE
 {
   string choice;
   int y=0 ,z=0;
@@ -82,19 +103,19 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
   for(int i=0;i<size;i++)
   {
     cout << setprecision(2) <<fixed;
-    cout << left << setw(15)<< sku[i] << left << setw(20) << in[i] << left << setw(15) 
-    << inunit[i] << left << setw(10) << price[i] << left << setw(15) << quantity[i] << endl;
+    cout << left << setw(15)<< p[i].sku << left << setw(20) << p[i].desc << left << setw(15) 
+    << p[i].iiu << left << setw(10) << p[i].price << left << setw(15) << p[i].qty << endl;
   } 
 
    cout << "Enter an SKU:";
    cin >> choice;
   while(z!=1)
   { 
-   while(choice != sku[y] && y<size )
+   while(choice != p[y].sku && y<size )
     {
       y++;
     }
-      if(choice == sku[y])
+      if(choice == p[y].sku)
       {
         z=1;
         
@@ -113,7 +134,7 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
 
   while(z!=1)
   {
-    if(amount<=quantity[y])
+    if(amount<=p[y].qty)
     {
       z=1;
     }
@@ -124,35 +145,35 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
        cin >> amount;
     }
   }
-    total = amount * price[y];
-      if(memberlvl[x] == "Diamond" && total >= 700)//checks for member level to apply discount
+    total = amount * p[y].price;
+      if(a[x].memberLevel == "Diamond" && total >= 700)//checks for member level to apply discount
       {
         total = total - (total * 0.12);
         total = total + (salesTax * total);
       }
-      else if (memberlvl[x] == "Diamond" && total >= 300 || memberlvl[x] == "Gold" && total >= 300)
+      else if (a[x].memberLevel == "Diamond" && total >= 300 || a[x].memberLevel == "Gold" && total >= 300)
       {
         total = total - (total * 0.085);
         total = total + (salesTax * total);
       }
-      else if (memberlvl[x] == "Diamond" && total >= 100 || memberlvl[x] == "Gold" && total >= 100 || memberlvl[x] == "Blue" && total >= 100)
+      else if (a[x].memberLevel == "Diamond" && total >= 100 || a[x].memberLevel == "Gold" && total >= 300 || a[x].memberLevel == "Blue" && total >= 100)
       {
         total = total - (total * 0.06);
         total = total + (salesTax * total);
       }         
-      if(total <= credit[x])//Makes sure the purchase is within the credit limit
+      if(total <= a[x].credit)//Makes sure the purchase is within the credit limit
       {
-        remainingCredit = credit[x]-total;//calculates remaining credit
+        remainingCredit = a[x].credit-total;//calculates remaining credit
         cout << "--------------------THANK YOU--------------------" << endl;//outputs the receipt
-        cout << "Name: " << name[x] << endl;                                                                   
-        cout << "Username: " << username[x] << endl;                                                             
-        cout << "Account Number: " << accNum[x] << endl;
-        cout << "Member Level: "  << memberlvl[x] << endl;                                            
-        cout << "Previous Balance: $" << credit[x] << endl;                                                      
-        cout << endl << amount << "x" << in[y]<< "      " << sku[y] << "      $" <<setw(10) << total << endl;     
+        cout << "Name: " << a[x].name << endl;                                                                   
+        cout << "Username: " << a[x].username << endl;                                                             
+        cout << "Account Number: " << a[x].accountNumber << endl;
+        cout << "Member Level: "  << a[x].memberLevel << endl;                                            
+        cout << "Previous Balance: $" << a[x].credit << endl;                                                      
+        cout << endl << amount << "x" << p[y].desc<< "      " << p[y].sku << "      $" <<setw(10) << total << endl;     
         cout << endl << "Remaining Balance: $" << remainingCredit << endl;
-        quantity[y]=quantity[y]-amount;
-        credit[x] = remainingCredit;                                 
+        p[y].qty=p[y].qty-amount;
+        a[x].credit = remainingCredit;                                 
       }
       else
       {
@@ -163,7 +184,7 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
 
 
 
-void viewItems(string sku[], string in[], string inunit[], double price[], double quantity[], int size)
+void viewItems(struct product p[], int size)//VIEW ITEMS 
 {
   cout <<left <<  setw(15)<< "SKU" <<left << setw(20) << "NAME" << left<<  
   setw(15) << "AMOUNT" << left << setw(10) << "PRICE" << left <<setw(15) << "QUANTITY" << endl;
@@ -171,13 +192,12 @@ void viewItems(string sku[], string in[], string inunit[], double price[], doubl
   for(int i=0;i<size;i++)
   {
     cout << setprecision(2) <<fixed;
-    cout << left << setw(15)<< sku[i] << left << setw(20) << in[i] << left << setw(15) 
-    << inunit[i] << left << setw(10) << price[i] << left << setw(15) << quantity[i] << endl;
+    cout << left << setw(15)<< p[i].sku << left << setw(20) << p[i].desc << left << setw(15) 
+    << p[i].iiu << left << setw(10) << p[i].price << left << setw(15) << p[i].qty << endl;
   } 
 }
 
-void getEstimate(string name[], string username[], string accNum[], string memberlvl[], string address[], 
-double credit[], string sku[], string in[], string inunit[], double price[], double quantity[], int x, int size)
+void getEstimate(struct accounts a[], struct product p[], int x, int size)//GET ESTIMATE FUNCTION
 {
   string choice;
   int y=0 ,z=0;
@@ -192,19 +212,19 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
   for(int i=0;i<size;i++)
   {
     cout << setprecision(2) <<fixed;
-    cout << left << setw(15)<< sku[i] << left << setw(20) << in[i] << left << setw(15) 
-    << inunit[i] << left << setw(10) << price[i] << left << setw(15) << quantity[i] << endl;
+    cout << left << setw(15)<< p[i].sku << left << setw(20) << p[i].desc << left << setw(15) 
+    << p[i].iiu << left << setw(10) << p[i].price << left << setw(15) << p[i].qty << endl;
   } 
 
    cout << "Enter an SKU:";
    cin >> choice;
   while(z!=1)
   { 
-   while(choice != sku[y] && y<size )
+   while(choice != p[y].sku && y<size )
     {
       y++;
     }
-      if(choice == sku[y])
+      if(choice == p[y].sku)
       {
         z=1;
         
@@ -223,7 +243,7 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
 
   while(z!=1)
   {
-    if(amount<=quantity[y])
+    if(amount<=p[y].qty)
     {
       z=1;
     }
@@ -234,26 +254,26 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
        cin >> amount;
     }
   }
-    total = amount * price[y];
-      if(memberlvl[x] == "Diamond" && total >= 700)//checks for member level to apply discount
+    total = amount * p[y].price;
+      if(a[x].memberLevel == "Diamond" && total >= 700)//checks for member level to apply discount
       {
         total = total - (total * 0.12);
         total = total + (salesTax * total);
       }
-      else if (memberlvl[x] == "Diamond" && total >= 300 || memberlvl[x] == "Gold" && total >= 300)
+      else if (a[x].memberLevel == "Diamond" && total >= 300 || a[x].memberLevel == "Gold" && total >= 300)
       {
         total = total - (total * 0.085);
         total = total + (salesTax * total);
       }
-      else if (memberlvl[x] == "Diamond" && total >= 100 || memberlvl[x] == "Gold" && total >= 100 || memberlvl[x] == "Blue" && total >= 100)
+      else if (a[x].memberLevel == "Diamond" && total >= 100 || a[x].memberLevel == "Gold" && total >= 100 || a[x].memberLevel == "Blue" && total >= 100)
       {
         total = total - (total * 0.06);
         total = total + (salesTax * total);
-      }
+      }    
       cout << "Your estimate is: $" << total << endl;
 }         
 
-  void changeAcc(string name[],string un[], string pw[], string aN[], string mL[], string addr[], int x)
+  void changeAcc(struct accounts a[], int x)//CHANGE ACCOUNT FUNCTION
   {
     int actopt, newLevel;
     string newAddress;
@@ -268,7 +288,7 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
        {
         cout << "Please enter a new password: ";
         cin >> password;
-        pw[x]=password;
+        a[x].password=password;
        }
        else if(actopt == 2)//changes membership level
        {
@@ -276,23 +296,23 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
         cin >> newLevel;
         if(newLevel == 1)//allows the application of the membership level
           {
-            mL[x] = "Blue";
-            cout << "Member level now: " << mL[x]<< endl;
+            a[x].memberLevel = "Blue";
+            cout << "Member level now: " << a[x].memberLevel<< endl;
           }
           else if(newLevel == 2)
           {
-             mL[x] = "Gold";
-            cout << "Member level now: " << mL[x] << endl;
+             a[x].memberLevel = "Gold";
+            cout << "Member level now: " << a[x].memberLevel << endl;
           }
           else if(newLevel == 3)
           {
-            mL[x] = "Diamond";
-            cout << "Member level now: " << mL[x] << endl;
+            a[x].memberLevel = "Diamond";
+            cout << "Member level now: " << a[x].memberLevel << endl;
           }
           else if (newLevel == 4)
           {
-            mL[x]= "None";
-            cout << "Member level: " << mL[x] << endl;
+            a[x].memberLevel = "None";
+            cout << "Member level: " << a[x].memberLevel << endl;
           }
           else
           {
@@ -305,19 +325,19 @@ double credit[], string sku[], string in[], string inunit[], double price[], dou
             cout << "Please enter your new address: " << endl;
             cin.ignore();
              getline (cin, newAddress);  
-             addr[x] = newAddress;
+             a[x].address = newAddress;
           }
        cout << "What do you want to change?(please select a number: 1-3)" << endl;//repeats
        cout << "1. Password" << endl << "2. Member Level" << endl << "3. Address" << endl <<"4. End" << endl; 
        cin >> actopt;  
     }
                   cout << "NEW INFO" << endl;//displays the new info when done from this submenu
-                        cout << "Name: " << name[x] << endl;
-                        cout << "Username: " << un[x] << endl;
-                        cout << "Password: " << pw[x] << endl;
-                         cout << "Account Number: " << aN[x] << endl;
-                        cout << "Member Level: "  << mL[x] << endl;  
-                        cout << "Address: " << addr[x] << endl;
+                        cout << "Name: " << a[x].name << endl;
+                        cout << "Username: " << a[x].username << endl;
+                        cout << "Password: " << a[x].password << endl;
+                         cout << "Account Number: " << a[x].accountNumber << endl;
+                        cout << "Member Level: "  << a[x].memberLevel << endl;  
+                        cout << "Address: " << a[x].address << endl;
   }
 
 int main()
@@ -330,9 +350,7 @@ int main()
     //    Account Variables   //
    //                        //
    int size = 4;
-   string name[size], username[size], 
-   password[size], accountNumber[size], memberLevel[size], address[size];
-   double credit[size];
+   accounts account[size];
    string passCheck, userCheck;
    int loginCount=0;
    int x=0, y, z;
@@ -340,8 +358,7 @@ int main()
     //    Purchase Variables  //
    //                        //
    int sizeb=6;
-   string sku[sizeb], itemname[sizeb], inUnit[sizeb]; 
-   double price[sizeb], quantity[sizeb];
+   product list[sizeb];
    int option=0;
    int purchases=0;
 
@@ -350,8 +367,8 @@ int main()
      //                        //
     //       LOGIN CODE       //
    //                        //
-   populateAccounts(name, username, password, accountNumber, memberLevel, credit, address, size);
-   populateStore(sku, itemname, inUnit, price, quantity, sizeb);
+   populateAccounts(account,size);
+   populateStore(list, sizeb);
      cout << "Please enter your username:";
        cin >> userCheck;
 
@@ -360,14 +377,14 @@ int main()
   while(loginCount<2) 
   {
     x=0;
-   while(userCheck != username[x] && passCheck != password[x] && x<size )
+   while(userCheck != account[x].username && passCheck != account[x].username && x<size )
     {
       x++;
     }
-      if(userCheck == username[x]&&passCheck == password[x])
+      if(userCheck == account[x].username && passCheck == account[x].password)
       {
         cout << "Login successful" << endl;
-        cout << "welcome " << name[x] << endl;
+        cout << "welcome " << account[x].name << endl;
         loginCount = 9;
       }
       else
@@ -398,8 +415,7 @@ int main()
             case(1):
             if(purchases<3)
             {
-                makePurchase(name, username, accountNumber, memberLevel, 
-                address, credit, sku, itemname, inUnit, price, quantity, x, sizeb);
+                makePurchase(account,list, x, sizeb);
                 purchases++;
             }
             else
@@ -409,16 +425,15 @@ int main()
             break;
 
             case(2):
-                viewItems(sku, itemname, inUnit, price, quantity, sizeb);
+                viewItems(list, sizeb);
             break;
 
             case(3):
-               getEstimate(name, username, accountNumber, memberLevel, 
-                address, credit, sku, itemname, inUnit, price, quantity, x, sizeb);
+               getEstimate(account,list, x, sizeb);
             break;
 
             case(4):
-                changeAcc(name, username, password, accountNumber, memberLevel, address, x);
+                changeAcc(account, x);
             break;
             default:
             cout << "Invalid Number" << endl;
@@ -444,4 +459,3 @@ int main()
     return 0;
 
 }//main
-
